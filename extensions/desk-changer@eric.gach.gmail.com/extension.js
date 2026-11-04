@@ -1,6 +1,7 @@
 'use strict';
 
-const Me = imports.misc.extensionUtils.getCurrentExtension();
+const ExtensionUtils = imports.misc.extensionUtils;
+const Me = ExtensionUtils.getCurrentExtension();
 // first init the common things
 Me.imports._deskchanger;
 
@@ -55,6 +56,8 @@ function disable() {
 function enable() {
     deskchanger.debug('enabling extension');
 
+    Utils.installService();
+    daemon = Service.makeProxyWrapper();
 
     changed_id = daemon.connectSignal('Changed', function (proxy, name, [uri]) {
         notify(_('Wallpaper changed: %s'.format(uri)));
@@ -79,14 +82,34 @@ function enable() {
     });
 
     rotation_id = deskchanger.settings.connect('changed::rotation', function () {
-        let message;
+        let message, interval,
+            rotation = deskchanger.settings.rotation,
+            [success, iterator] = deskchanger.rotation.get_iter_first();
 
-        switch (deskchanger.settings.rotation) {
+        while (success) {
+            if (deskchanger.rotation.get_value(iterator, 0) === rotation) {
+                if (rotation === 'interval') {
+                    interval = `${deskchanger.rotation.get_value(iterator, 2)} of ${deskchanger.settings.interval} seconds`;
+                } else {
+                    interval = deskchanger.rotation.get_value(iterator, 2);
+                }
+
+                rotation = deskchanger.rotation.get_value(iterator, 1);
+                break;
+            }
+
+            success = deskchanger.rotation.iter_next(iterator);
+        }
+
+        switch (rotation) {
             case 'interval':
-                message = _('Rotation will occur every %d seconds'.format(deskchanger.settings.interval));
+                message = _(`Rotation will occur at a ${interval}`);
                 break;
             case 'hourly':
                 message = _('Rotation will occur at the beginning of every hour');
+                break;
+            case 'daily':
+                message = _('Rotation will occur at the beginning of every day');
                 break;
             default:
                 message = _('Rotation has been disabled');
@@ -113,7 +136,5 @@ function notify(message, force) {
 function init() {
     log(`init ${Me.uuid} version ${Me.metadata.version}`);
 
-    Utils.installService();
-
-    daemon = Service.makeProxyWrapper();
+    ExtensionUtils.initTranslations();
 }
