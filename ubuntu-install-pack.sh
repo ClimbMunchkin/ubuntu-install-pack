@@ -33,6 +33,9 @@ progs=$(zenity --width=800 --height=500 --list  --text "НАСТРОЙКА UBUNT
 			   TRUE '2.7-fonts' 'Шрифты'\
 			   TRUE '2.8-themes' 'Темы для GNOME'\
 			   TRUE '2.9-qt' 'QT приложения не будут отличаться от системной темы'\
+			   TRUE '2.10-setup-sudo-scripts-dir' 'Настраиваем отдельную папку для запуска скриптов требующих sudo'\
+			   
+			   
 			   
 
 			   TRUE '3-programs' 'Обязательные программы'\

@@ -1,0 +1,62 @@
+#!/bin/bash
+#
+# setup-sudo-scripts-dir.sh
+# Создаёт защищённую папку для sudo-скриптов (владелец root, права 711)
+# и добавляет правило в /etc/sudoers.
+#
+# Каталог по умолчанию: /home/$USER/.sudo-scripts
+# Можно указать свой — интерактивно или аргументом.
+#
+# Использование:
+#   ./setup-sudo-scripts-dir.sh                  # спросит путь (Enter = по умолчанию)
+#   ./setup-sudo-scripts-dir.sh /opt/sudo-scripts # сразу свой путь
+#
+
+set -euo pipefail
+
+DEFAULT_DIR="/home/${USER}/.sudo-scripts"
+
+# ---- Цветной вывод ----
+info()  { printf '\033[1;34m[INFO]\033[0m  %s\n' "$*"; }
+ok()    { printf '\033[1;32m[ OK ]\033[0m  %s\n' "$*"; }
+err()   { printf '\033[1;31m[ERR ]\033[0m  %s\n' "$*" >&2; }
+
+# ---- Выбор каталога ----
+if [ $# -ge 1 ]; then
+    SCRIPTS_DIR="$1"
+else
+    read -rp "Каталог для sudo-скриптов [${DEFAULT_DIR}]: " answer
+    SCRIPTS_DIR="${answer:-${DEFAULT_DIR}}"
+fi
+
+# ---- Валидация пути ----
+# Разворачиваем ~ и относительные пути в абсолютные
+SCRIPTS_DIR="$(realpath -m "${SCRIPTS_DIR}")"
+
+if [ "${SCRIPTS_DIR}" = "/" ]; then
+    err "Нельзя использовать корень '/' как каталог для скриптов."
+    exit 1
+fi
+
+if [ -d "${SCRIPTS_DIR}" ]; then
+    ok "Каталог уже существует: ${SCRIPTS_DIR}"
+else
+    info "Создаю каталог: ${SCRIPTS_DIR}"
+    mkdir -p "${SCRIPTS_DIR}"
+fi
+
+# ---- Sudoers ----
+info "Добавляю правило в /etc/sudoers..."
+# Проверяем, нет ли уже такого правила (чтобы не дублировать)
+if sudo grep -qF "${USER} ALL=NOPASSWD: ${SCRIPTS_DIR}" /etc/sudoers 2>/dev/null; then
+    ok "Правило уже присутствует в /etc/sudoers — пропускаю."
+else
+    sudo sh -c "echo '${USER} ALL=NOPASSWD: ${SCRIPTS_DIR}' >>/etc/sudoers"
+    ok "Правило добавлено."
+fi
+
+# ---- Владелец и права ----
+info "Устанавливаю владельца root:root и права 711..."
+sudo chown root:root -R "${SCRIPTS_DIR}"
+sudo chmod 711 "${SCRIPTS_DIR}"
+ok "Готово: ${SCRIPTS_DIR} (root:root, 711)"
