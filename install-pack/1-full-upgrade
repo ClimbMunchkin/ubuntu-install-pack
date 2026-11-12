@@ -1,5 +1,0 @@
-#!/bin/bash
-echo "#ПЕРЕХОД НА НОВУЮ LTS ВЕРСИЮ СИСТЕМЫ..."
-sudo apt update
-sudo apt full-upgrade -y
-update-manager -c -d

@@ -1,13 +1,8 @@
 #!/bin/bash
 #Меняем владельца текущей папки с подпапками
 
-#Функция для вывода повторяющихся символов
-function n_char(){ 
-    seq 1 $2 | tr -dc \\n | tr \\n "$1"; echo;
-}
-
-
 cd ~/ubuntu-install-pack
+
 password=$(zenity --forms \
 	--title="НАСТРОЙКА UBUNTU" \
   	--text="Введите пароль Администратора" \
@@ -17,71 +12,57 @@ echo $password | sudo -S chown -R $USER:$USER .
 #sudo chown -R $USER:$USER .
 #Даем права на запуск скриптов в каталоге install-pack/
 sudo chmod +x install-pack/*
+
 #read -sn1 -p "Press any key to continue...";echo
 progs=$(zenity --width=800 --height=500 --list  --text "НАСТРОЙКА UBUNTU" --checklist --separator=" " \
 			  --column "Выбрать" --column "Компоненты" --column "Описание" \
 			   TRUE '0-upgrade' 'Обновление системы до последней актуальной версии'\
-			   FALSE '1-full-upgrade' 'Переход на новую LTS версию системы'\
-			   TRUE '1.1-chrome' 'Установка стабильной версии Chrome'\
-			   FALSE '2-nvidia-driver' 'Установка драйвера видеокарты nvidia GeForce GTX 1650'\
-			   TRUE '2.1-poweroff-button' 'Выключение компьютера с кнопки' \
-			   FALSE '2.2-lightdm' 'Установка lightdm и настройка окна входа в систему'\
-			   TRUE '2.3-switchkey' 'Переключение раскладки клавиатуры Ctrl+Shift'\
-			   TRUE '2.4-i386' 'Поддержка i386 архитектуры'\
-			   TRUE '2.5-hot-corner' 'Включаем активный угол меню Обзор'\
-			   TRUE '2.6-templates' 'Шаблоны'\
+			   
+			   FALSE '1-brightness' 'Решение проблемы запоминания яркости Ubuntu '\
+			   FALSE '1.1-lightdm' 'Установка lightdm и настройка окна входа в систему'\
+			   
+
+			   TRUE '2-poweroff-button' 'Выключение компьютера с кнопки' \
+			   TRUE '2.1-switchkey' 'Переключение раскладки клавиатуры Ctrl+Shift'\
+			   TRUE '2.2-i386' 'Поддержка i386 архитектуры'\
+			   TRUE '2.3-hot-corner' 'Включаем активный угол меню Обзор'\
+			   TRUE '2.4-templates' 'Шаблоны'\
+			   TRUE '2.5-conky-clock' 'Ставим красивые часы и системный монитор на рабочий стол'\
+			   TRUE '2.6-extensions' 'Ставим расширения рабочего стола'\
+			   
 			   TRUE '2.7-fonts' 'Шрифты'\
 			   TRUE '2.8-themes' 'Темы для GNOME'\
+			   TRUE '2.9-qt' 'QT приложения не будут отличаться от системной темы'\
+			   
+
 			   TRUE '3-programs' 'Обязательные программы'\
-			   TRUE '3.1-extensions' 'Ставим расширения рабочего стола'\
+			   TRUE '3.1-chrome' 'Установка стабильной версии Chrome'\
+			   TRUE '3.2-zsh-terminal' 'Установка красивого и удобного терминала ZSH'\
+			   
 			   FALSE '3.3-codec' 'Установка кодеков для воспроизведения мультимедиа'\
 			   FALSE '3.4-flash' 'Установка flash -плейера'\
-			   TRUE '3.5-qt' 'QT приложения не будут отличаться от системной темы'\
-			   TRUE '3.6-conky-clock' 'Ставим красивые часы и системный монитор на рабочий стол'\
-			   FALSE '3.7-amule' 'Установка клиента P2P aMule'\
-			   FALSE '3.8-office' 'Установка офисных программ'\
+			   FALSE '3.5-office' 'Установка офисных программ'\
+
 			   FALSE '4-zen-kernel' 'Установка Zen-ядра на Ubuntu 20.04'\
-			   FALSE '1-brightness' 'Решение проблемы запоминания яркости Ubuntu '\
+
+			   FALSE '5-nvidia-driver' 'Установка драйвера видеокарты nvidia GeForce GTX 1650'\
 			   )
 cd install-pack
 
 count=$(echo $progs |wc -w)
 clear
 echo "ЧИСЛО УСТАНАВЛИВАЕМЫХ КОМПОНЕНТ: $count"
-delta=$((100/$count + 1))
 
 
-#(
-procent=0 #Процент выполнения
 for prog in $progs; do
 	echo "Установка $prog ..."
-	#echo $procent #Выводим процент выполнения для zenity
-	#echo "#Установка $prog"
+
 	
 	echo "===================================================================================================="
 	./$prog 
- 	sleep 1s
- 	procent=$(( $procent + $delta ))
-
- 	if [ $procent -gt 100 ];then
- 		procent=100
- 	fi
-
- 	s=`n_char '#' $procent`; 
- 	echo  $s' ('$procent'%)'
-
+ 
 done
-#)|
-#zenity --progress \
-#       --title="Конфигурирование. Устанавливаем $count компонент." \
-#       --text="Инициализация..." \
-#       --percentage=0 --width=600 --height=100\
-#       --auto-close --auto-kill 
-#
-#if [ "$?" = -1 ]
-#then
-#  zenity --error --text="Изменение конфигурации отменено"
-#fi
+
 
 #Перезагружаемся в конце установки
 echo "===================================================================================================="
