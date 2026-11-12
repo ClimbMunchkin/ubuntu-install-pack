@@ -4,4 +4,6 @@ echo "#УСТАНАВЛИВАЕМ ОБЯЗАТЕЛЬНЫЕ ПРОГРАММЫ...
 sudo add-apt-repository ppa:danielrichter2007/grub-customizer
 sudo apt update
 sudo apt install -y gdebi synaptic mc nemo menulibre dconf-editor net-tools tilix \
-catfish gnome-tweaks chrome-gnome-shell grub-customizer timeshift qbittorrent vlc pinta
+catfish gnome-tweaks chrome-gnome-shell grub-customizer timeshift qbittorrent vlc 
+
+sudo snap install pinta
