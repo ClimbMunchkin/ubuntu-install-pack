@@ -31,9 +31,9 @@ gnome-extensions enable desk-changer@eric.gach.gmail.com
 
 #Загружаем настройки для расширений
 
-cat ../config/arcmenu.conf | dconf load /org/gnome/shell/extensions/arcmenu/ 
-cat ../config/dash-to-panel.conf | dconf load /org/gnome/shell/extensions/dash-to-panel/ 
-cat ../config/desk-changer.conf| dconf load /org/gnome/shell/extensions/desk-changer/
+cat ../config/extensions/arcmenu.conf | dconf load /org/gnome/shell/extensions/arcmenu/ 
+cat ../config/extensions/dash-to-panel.conf | dconf load /org/gnome/shell/extensions/dash-to-panel/ 
+cat ../config/extensions/desk-changer.conf| dconf load /org/gnome/shell/extensions/desk-changer/
 
 
 
