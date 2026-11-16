@@ -17,11 +17,8 @@ sudo chmod +x install-pack/*
 progs=$(zenity --width=800 --height=500 --list  --text "НАСТРОЙКА UBUNTU" --checklist --separator=" " \
 			  --column "Выбрать" --column "Компоненты" --column "Описание" \
 			   TRUE '0-upgrade' 'Обновление системы до последней актуальной версии'\
-			   
 			   FALSE '1-brightness' 'Решение проблемы запоминания яркости Ubuntu '\
 			   FALSE '1.1-lightdm' 'Установка lightdm и настройка окна входа в систему'\
-			   
-
 			   TRUE '2-poweroff-button' 'Выключение компьютера с кнопки' \
 			   TRUE '2.1-switchkey' 'Переключение раскладки клавиатуры Ctrl+Shift'\
 			   TRUE '2.2-i386' 'Поддержка i386 архитектуры'\
@@ -29,25 +26,17 @@ progs=$(zenity --width=800 --height=500 --list  --text "НАСТРОЙКА UBUNT
 			   TRUE '2.4-templates' 'Шаблоны'\
 			   TRUE '2.5-conky-clock' 'Ставим красивые часы и системный монитор на рабочий стол'\
 			   TRUE '2.6-extensions' 'Ставим расширения рабочего стола'\
-			   
 			   TRUE '2.7-fonts' 'Шрифты'\
 			   TRUE '2.8-themes' 'Темы для GNOME'\
 			   TRUE '2.9-qt' 'QT приложения не будут отличаться от системной темы'\
 			   TRUE '2.10-setup-sudo-scripts-dir' 'Настраиваем отдельную папку для запуска скриптов требующих sudo'\
-			   
-			   
-			   
-
 			   TRUE '3-programs' 'Обязательные программы'\
 			   TRUE '3.1-chrome' 'Установка стабильной версии Chrome'\
 			   TRUE '3.2-zsh-terminal' 'Установка красивого и удобного терминала ZSH'\
-			   
 			   FALSE '3.3-codec' 'Установка кодеков для воспроизведения мультимедиа'\
 			   FALSE '3.4-flash' 'Установка flash -плейера'\
 			   FALSE '3.5-office' 'Установка офисных программ'\
-
 			   FALSE '4-zen-kernel' 'Установка Zen-ядра на Ubuntu 20.04'\
-
 			   FALSE '5-nvidia-driver' 'Установка драйвера видеокарты nvidia GeForce GTX 1650'\
 			   )
 cd install-pack
