@@ -141,22 +141,46 @@ if [ ! -f "${ZSHRC}" ]; then
     cp "${HOME}/.oh-my-zsh/templates/zshrc.zsh-template" "${ZSHRC}"
 fi
 
-# Добавляем плагины в .zshrc 
 
-sed -i 's/^plugins=(.*)/plugins=(git zsh-syntax-highlighting zsh-autosuggestions)/' ~/.zshrc
+# ---- 6. Устанавливаем тему p10k и добавляем плагины в .zshrc 
 
-
-# задаем иконки и плагины
+# клонируем плагины
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
+
+info "Установка ZSH_THEME=\"${ZSH_THEME_NAME}\" в ~/.zshrc..."
+sed -i -E "s|^[[:space:]]*#?[[:space:]]*ZSH_THEME=.*|ZSH_THEME=\"${ZSH_THEME_NAME}\"|" "${ZSHRC}"
+
+info "Добавляем плагины zsh-syntax-highlighting zsh-autosuggestions в ~/.zshrc..."
+sed -i 's/^plugins=(.*)/plugins=(git zsh-syntax-highlighting zsh-autosuggestions)/' "${ZSHRC}"
+
+info "Добавляем загрузку файла в текущую оболочку "
+echo "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh" >> "${ZSHRC}"
+
+
+# ---- 6. Копирование готового конфига .p10k.zsh ----
+
 P10K_CONFIG="${HOME}/.p10k.zsh"
+# путь к  .p10k.zsh на диске
+P10K_CONFIG_SRC="../config/oh-my-zsh/.p10k.zsh"
 
 if [ ! -f "${P10K_CONFIG}" ]; then
-    warn "${P10K_CONFIG} не найден. Создаю минимальный конфиг из шаблона Oh My Zsh..."
-    cp "../config/oh-my-zsh/.p10k.zsh" "${P10K_CONFIG}"
+    if [ -f "${P10K_CONFIG_SRC}" ]; then
+        info "Копирование готового конфига .p10k.zsh..."
+        cp "${P10K_CONFIG_SRC}" "${P10K_CONFIG}"
+        ok "Конфиг .p10k.zsh установлен."
+    else
+        err "Исходный файл ${P10K_CONFIG_SRC} не найден! Мастер настройки запустится снова."
+    fi
+else
+    ok "Конфиг .p10k.zsh уже существует, мастер не запустится."
 fi
 
-
-source ~/.p10k.zsh
+echo
+ok "Установка терминала завершена!"
+cat <<EOF
+    Внимание! Настройки вступят в силу после перезагрузки.
+    Для изменения внешнего вида p10k под себя запустите комаду: p10k configure
+EOF
 
