@@ -141,31 +141,10 @@ if [ ! -f "${ZSHRC}" ]; then
     cp "${HOME}/.oh-my-zsh/templates/zshrc.zsh-template" "${ZSHRC}"
 fi
 
-# Резервная копия перед правкой
-BACKUP="${ZSHRC}.bak.$(date +%Y%m%d-%H%M%S)"
-cp "${ZSHRC}" "${BACKUP}"
-info "Резервная копия ~/.zshrc: ${BACKUP}"
+# Добавляем плагины в .zshrc 
 
-if grep -qE '^ZSH_THEME="powerlevel10k/powerlevel10k"' "${ZSHRC}"; then
-    ok "ZSH_THEME уже установлен в powerlevel10k/powerlevel10k"
-else
-    info "Устанавливаю ZSH_THEME=\"${ZSH_THEME_NAME}\" в ~/.zshrc..."
-    # Заменяем закомментированную или активную строку ZSH_THEME="..."
-    if grep -qE '^[[:space:]]*#?[[:space:]]*ZSH_THEME=' "${ZSHRC}"; then
-        sed -i -E "s|^[[:space:]]*#?[[:space:]]*ZSH_THEME=.*|ZSH_THEME=\"${ZSH_THEME_NAME}\"|" "${ZSHRC}"
-    else
-        # Если строки нет — добавляем после первого блока комментариев
-        printf '\nZSH_THEME="%s"\n' "${ZSH_THEME_NAME}" >> "${ZSHRC}"
-    fi
-    ok "ZSH_THEME настроен."
-fi
+sed -i 's/^plugins=(.*)/plugins=(git zsh-syntax-highlighting zsh-autosuggestions)/' ~/.zshrc
 
-# Возможно достаточно просто скопировать .zshrc
-
-#if [ ! -f "${ZSHRC}" ]; then
-#    warn "${ZSHRC} не найден. Создаю минимальный конфиг из шаблона Oh My Zsh..."
-#    cp "../config/oh-my-zsh/.zshrc" "${ZSHRC}"
-#fi
 
 # задаем иконки и плагины
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
