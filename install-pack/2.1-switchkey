@@ -1,4 +1,4 @@
 #!/bin/bash
 #Переключение раскладки клавиатуры Ctrl+Shift
-echo "#ПЕРЕКЛЮЧЕНИЕ РАСКЛАДКИ КЛАВИАТУРЫ CTRL+SHIFT"
+echo -e '\033[1;32m ПЕРЕКЛЮЧЕНИЕ РАСКЛАДКИ КЛАВИАТУРЫ CTRL+SHIFT...\033[0m'
 gsettings set org.gnome.desktop.input-sources xkb-options "['grp:ctrl_shift_toggle']"

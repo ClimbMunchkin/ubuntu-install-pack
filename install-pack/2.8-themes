@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 #Установка тем
-echo "#УСТАНАВЛИВАЕМ ТЕМЫ ДЛЯ GNOME..."
+echo -e '\033[1;32m УСТАНАВЛИВАЕМ ТЕМЫ ДЛЯ GNOME...\033[0m'
 mkdir ~/.themes
 cp ../themes/themes/* ~/.themes
 cd ~/.themes

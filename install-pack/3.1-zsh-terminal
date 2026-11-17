@@ -5,6 +5,10 @@
 
 set -euo pipefail
 
+
+echo -e '\033[1;32m УСТАНОВКА КРАСИВОГО И УДОБНОГО ТЕРМИНАЛА ZSH + Oh My Zsh + powerlevel10k...\033[0m'
+
+
 # ---- Параметры скачивания шрифтов ----
 FONT_VERSION="v3.5.1"
 FONT_NAME="FiraCode"

@@ -1,4 +1,4 @@
 #!/bin/bash
 #Включаем активный угол меню Обзор
-echo "#ВКЛЮЧАЕМ АКТИВНЫЙ УГОЛ МЕНЮ ОБЗОР..."
+echo -e '\033[1;32m ВКЛЮЧАЕМ АКТИВНЫЙ УГОЛ МЕНЮ ОБЗОР...\033[0m'
 gsettings set org.gnome.desktop.interface enable-hot-corners true

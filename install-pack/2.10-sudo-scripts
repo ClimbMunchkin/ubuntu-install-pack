@@ -12,6 +12,8 @@
 #   ./setup-sudo-scripts-dir.sh /opt/.sudo-scripts # сразу свой путь
 #
 
+echo -e '\033[1;32m НАСТРАИВАЕМ ОТДЕЛЬНУЮ ПАПКУ ДЛЯ ЗАПУСКА СКРИПТОВ ТРЕБУЮЩИХ sudo...\033[0m'
+
 set -euo pipefail
 
 DEFAULT_DIR="/opt/.sudo-scripts"

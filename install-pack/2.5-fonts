@@ -1,6 +1,6 @@
 #!/bin/bash
 #Обязательные программы
-echo "#УСТАНАВЛИВАЕМ ШРИФТЫ..."
+echo -e '\033[1;32m УСТАНАВЛИВАЕМ ШРИФТЫ...\033[0m'
 sudo apt update
 sudo apt install -y ttf-mscorefonts-installer cabextract
 mkdir ~/.fonts

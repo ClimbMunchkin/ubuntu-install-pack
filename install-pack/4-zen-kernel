@@ -1,4 +1,4 @@
-#!/bin/sh
-echo "#УСТАНОВКА ИГРОВОГО ZEN-ЯДРА НА UBUNTU"
+#!/bin/bash
+echo -e '\033[1;32m УСТАНОВКА ИГРОВОГО ZEN-ЯДРА НА UBUNTU...\033[0m'
 sudo add-apt-repository ppa:damentz/liquorix && sudo apt-get update
 sudo apt-get install linux-headers-liquorix-amd64 linux-image-liquorix-amd64

@@ -1,6 +1,7 @@
 #!/bin/bash
 #Устанавливаем файлы расширения
-echo "#УСТАНАВЛИВАЕМ ФАЙЛЫ РАСШИРЕНИЯ..."
+echo -e '\033[1;32m УСТАНАВЛИВАЕМ ФАЙЛЫ РАСШИРЕНИЯ: arcmenu, dash-to-panel, tilingshell, openweather-extension, user-theme, desk-changer...\033[0m'
+
 #Установка pomodoro
 sudo apt install -y gnome-shell-pomodoro
 

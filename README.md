@@ -9,11 +9,7 @@ It’s the perfect setup tool for GNU/Linux users who want efficiency and simpli
 
 Обновление системы до последней актуальной версии
 
-Переход на новую LTS версию системы
-
-Установка стабильной версии Chrome
-
-Установка драйвера видеокарты nvidia GeForce GTX 1650
+Решение проблемы запоминания яркости Ubuntu
 
 Выключение компьютера с кнопки
 
@@ -31,9 +27,9 @@ It’s the perfect setup tool for GNU/Linux users who want efficiency and simpli
 
 Установка тем для GNOME
 
-Обязательные программы (gdebi synaptic mc nemo menulibre dconf-editor net-tools tilix catfish gnome-tweaks chrome-gnome-shell grub-customizer timeshift qbittorrent vlc pinta)
+Обязательные программы (google-chrome gdebi synaptic mc nemo menulibre dconf-editor net-tools tilix catfish gnome-tweaks chrome-gnome-shell grub-customizer timeshift qbittorrent vlc)
 
-Ставим расширения рабочего стола (Extensions, Dash to Panel, ArcMenu, Ubuntu AppIndicators, Desktop icons, Pomodoro, OpenWeather, User themes, Application view columns, Pop Shell)
+Ставим расширения рабочего стола (Extensions, Dash to Panel, ArcMenu, Pomodoro, OpenWeather, User themes, Tiling Shell, Desk Changer)
 
 Установка кодеков для воспроизведения мультимедиа
 
@@ -43,13 +39,11 @@ QT приложения не будут отличаться от системн
 
 Ставим красивые часы и системный монитор на рабочий стол
 
-Установка клиента P2P aMule
-
 Установка офисных программ
 
-Установка Zen-ядра на Ubuntu
+Установка игрового Zen-ядра на Ubuntu
 
-Решение проблемы запоминания яркости Ubuntu
+Установка драйвера видеокарты nvidia GeForce GTX 1650
 
 Установка:
 ----------
@@ -67,7 +61,7 @@ QT приложения не будут отличаться от системн
 
 Скопируйте установочный скрипт в буфер и запустите его  в командной строке
 
-``` 
+```bash
 sudo apt update && sudo apt install -y git && cd ~ &&
 git clone https://github.com/ClimbMunchkin/ubuntu-install-pack.git ubuntu-install-pack &&
 bash ~/ubuntu-install-pack/ubuntu-install-pack.sh
@@ -79,7 +73,7 @@ bash ~/ubuntu-install-pack/ubuntu-install-pack.sh
 Примечание:
 --------
 Если расширения все-таки не включились, сделайте это вручную после перезагрузки:
-```
+```bash
 gnome-extensions enable arcmenu@arcmenu.com
 gnome-extensions enable dash-to-panel@jderose9.github.com
 gnome-extensions enable tilingshell@ferrarodomenico.com

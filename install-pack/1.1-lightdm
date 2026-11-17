@@ -1,6 +1,6 @@
 #!/bin/bash
 #Настройка окна входа в систему
-echo "#НАСТРОЙКА ОКНА ВХОДА В СИСТЕМУ..."
+echo -e '\033[1;32m НАСТРОЙКА ОКНА ВХОДА В СИСТЕМУ...\033[0m'
 sudo apt install lightdm lightdm-settings slick-greeter -y
 
 #Задаем экран приветствия:
