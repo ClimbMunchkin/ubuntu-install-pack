@@ -6,11 +6,13 @@ echo "#УСТАНАВЛИВАЕМ ОБЯЗАТЕЛЬНЫЕ ПРОГРАММЫ...
 sudo add-apt-repository ppa:danielrichter2007/grub-customizer
 
 # Ключи для репы google-chrome
-curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg
-echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+sudo mkdir -p /usr/share/keyrings
+wget -qO- https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor --yes -o /usr/share/keyrings/google-chrome.gpg
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] https://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+
 
 sudo apt update
 sudo apt install -y google-chrome-stable gdebi synaptic mc nemo menulibre dconf-editor net-tools tilix \
 catfish gnome-tweaks chrome-gnome-shell grub-customizer timeshift qbittorrent vlc 
 
-sudo snap install pinta
+#sudo snap install pinta

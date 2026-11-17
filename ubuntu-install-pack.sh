@@ -30,11 +30,13 @@ progs=$(zenity --width=800 --height=500 --list  --text "НАСТРОЙКА UBUNT
 			   TRUE '2.8-themes' 'Темы для GNOME'\
 			   TRUE '2.9-qt' 'QT приложения не будут отличаться от системной темы'\
 			   TRUE '2.10-sudo-scripts' 'Настраиваем отдельную папку для запуска скриптов требующих sudo'\
+			   TRUE '2.11-remove-old-packages' 'Добавляем скрипт для удаления старых пакетов'\
 			   TRUE '3-programs' 'Обязательные программы, в том числе Chrome'\
 			   TRUE '3.1-zsh-terminal' 'Установка красивого и удобного терминала ZSH'\
-			   FALSE '3.2-codec' 'Установка кодеков для воспроизведения мультимедиа'\
-			   FALSE '3.3-flash' 'Установка flash -плейера'\
-			   FALSE '3.4-office' 'Установка офисных программ'\
+			   TRUE '3.2-rkhunter' 'Установка антивируса rkHunter'\
+			   FALSE '3.3-codec' 'Установка кодеков для воспроизведения мультимедиа'\
+			   FALSE '3.4-flash' 'Установка flash -плейера'\
+			   FALSE '3.5-office' 'Установка офисных программ'\
 			   FALSE '4-zen-kernel' 'Установка игрового Zen-ядра на Ubuntu'\
 			   FALSE '5-nvidia-driver' 'Установка драйвера видеокарты nvidia GeForce GTX 1650'\
 			   )

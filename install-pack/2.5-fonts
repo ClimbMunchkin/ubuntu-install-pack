@@ -7,3 +7,4 @@ mkdir ~/.fonts
 wget -qO- http://plasmasturm.org/code/vistafonts-installer/vistafonts-installer | bash
 cp ../fonts/* ~/.fonts
 fc-cache -f -v
+rm PowerPointViewer.exe
