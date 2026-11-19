@@ -127,20 +127,70 @@ updated_count=0
 error_msgs=""
 
 if [[ "$action" == "Разово обновить выбранные (снять блокировку, обновить, вернуть)" ]]; then
-    # Логика разового обновления
+    # Собираем список выбранных пакетов в массив (убрали local)
+    to_update=()
     for pkg in "${!current_status[@]}"; do
         if [[ "${current_status[$pkg]}" == "1" ]]; then
-            # Снимаем блокировку, обновляем, возвращаем блокировку
-            if snap refresh --unhold "$pkg"  && \
-               snap refresh "$pkg"  && \
-               snap refresh --hold "$pkg" ; then
-                ((updated_count++))
-            else
-                error_msgs+="Ошибка обновления $pkg\n"
-            fi
+            to_update+=("$pkg")
         fi
     done
-    zenity --info --text="Разово обновлено пакетов: $updated_count\n\n$error_msgs" 2>/dev/null
+
+    total=${#to_update[@]}
+    
+    if [[ $total -eq 0 ]]; then
+        zenity --info --text="Не выбрано ни одного пакета для обновления." 2>/dev/null
+        exit 0
+    fi
+
+    # Создаем временный файл-пайп для передачи данных в zenity progress (убрали local)
+    pipe=$(mktemp -u)
+    mkfifo "$pipe"
+
+    # Запускаем zenity progress в фоне, читая из пайпа
+    zenity --progress \
+        --title="$TITLE" \
+        --text="Подготовка к обновлению..." \
+        --percentage=0 \
+        --auto-close \
+        < "$pipe" &
+    zenity_pid=$!
+
+    # Открываем пайп для записи
+    exec 3> "$pipe"
+
+    current=0
+    updated_count=0
+    error_msgs=""
+
+    for pkg in "${to_update[@]}"; do
+        ((current++))
+        percent=$(( current * 100 / total ))
+        
+        # Обновляем текст в окне прогресса
+        echo "# Обновление $pkg ($current из $total)..." >&3
+        echo "$percent" >&3
+
+        # Выполняем обновление (скрываем вывод, чтобы не засорять консоль)
+        if snap refresh --unhold "$pkg" >/dev/null 2>&1 && \
+           snap refresh "$pkg" >/dev/null 2>&1 && \
+           snap refresh --hold "$pkg" >/dev/null 2>&1; then
+            ((updated_count++))
+        else
+            error_msgs+="Ошибка обновления $pkg\n"
+        fi
+    done
+
+    # Закрываем пайп и ждем завершения zenity
+    exec 3>&-
+    wait $zenity_pid
+    rm -f "$pipe"
+
+    # Итоговый отчет
+    if [[ -n "$error_msgs" ]]; then
+        zenity --warning --text="Готово с ошибками:\n\nУспешно обновлено: $updated_count\n\n$error_msgs" 2>/dev/null
+    else
+        zenity --info --text="Успешно обновлено пакетов: $updated_count" 2>/dev/null
+    fi
     exit 0
 fi
 
