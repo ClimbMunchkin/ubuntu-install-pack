@@ -44,7 +44,7 @@ if [ -d "${SCRIPTS_DIR}" ]; then
     ok "Каталог уже существует: ${SCRIPTS_DIR}"
 else
     info "Создаю каталог: ${SCRIPTS_DIR}"
-    mkdir -p "${SCRIPTS_DIR}"
+    sudo mkdir -p "${SCRIPTS_DIR}"
 fi
 
 # ---- Sudoers ----
@@ -53,7 +53,7 @@ info "Добавляю правило в /etc/sudoers..."
 if sudo grep -qF "${USER} ALL=NOPASSWD: ${SCRIPTS_DIR}" /etc/sudoers 2>/dev/null; then
     ok "Правило уже присутствует в /etc/sudoers — пропускаю."
 else
-    sudo sh -c "echo '${USER} ALL=NOPASSWD: ${SCRIPTS_DIR}' >>/etc/sudoers"
+    sudo sh -c "echo '${USER} ALL=NOPASSWD: ${SCRIPTS_DIR}/' >>/etc/sudoers"
     ok "Правило добавлено."
 fi
 
