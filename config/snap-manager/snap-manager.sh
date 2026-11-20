@@ -2,7 +2,18 @@
 # snap-manager.sh — продвинутый менеджер блокировок Snap
 
 LOG_DIR="/var/log/snap-update-manager"
+
 ACTIVE_SORT=0  # 0 = быстрый запуск (без меню) - сначала системные пакеты, 1 = спрашивать сортировку
+
+
+# Разбор аргументов
+# sudo ./snap-manager.sh -s (спросит сортировку)
+while getopts "s" opt; do
+    case $opt in
+        s) ACTIVE_SORT=1 ;;
+    esac
+done
+
 
 if [[ $EUID -ne 0 ]]; then
     zenity --error --text="Требуются права root. Запустите через sudo." 2>/dev/null
