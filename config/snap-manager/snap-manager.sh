@@ -30,6 +30,17 @@ fi
 # --- 1. Получение версии Snapd ---
 SNAPD_VER=$(snap version 2>/dev/null | awk '/^snapd/ {print $2}')
 [[ -z "$SNAPD_VER" ]] && SNAPD_VER="unknown"
+
+# После получения SNAPD_VER делаем  проверку
+SNAPD_VER_NUM=$(echo "$SNAPD_VER" | grep -oE '^[0-9]+\.[0-9]+' || echo "0.0")
+# Используем bc для сравнения версий (если bc не установлен, переходим в резервную ветку)
+if [[ $(echo "$SNAPD_VER_NUM < 2.58" | bc 2>/dev/null || echo "1") -eq 1 ]]; then
+    zenity --error --title="Версия не поддерживается" \
+        --text="Текущая версия snapd ($SNAPD_VER) ниже минимально требуемой 2.58.\n\nФункция --hold недоступна, скрипт не может продолжить работу.\n\nПожалуйста, сначала обновите snapd:\n  sudo snap refresh snapd" \
+        2>/dev/null
+    exit 1
+fi
+
 TITLE="Управление обновлениями Snap (v$SNAPD_VER)"
 
 declare -A initial_status
@@ -214,9 +225,7 @@ if [[ "$action" == "Разово обновить заблокированные
         log_file=$(mktemp)
         
         # Выполняем обновление
-        if snap refresh --unhold "$pkg" >/dev/null 2>&1 && \
-           snap refresh "$pkg" > "$log_file" 2>&1 && \
-           snap refresh --hold "$pkg" >/dev/null 2>&1; then
+        if snap refresh "$pkg" > "$log_file" 2>&1; then
             ((updated_count++))
             echo "[УСПЕХ] $pkg обновлен." >> "$MASTER_LOG"
             cat "$log_file" >> "$MASTER_LOG"
