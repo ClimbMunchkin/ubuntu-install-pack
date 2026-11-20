@@ -1,9 +1,19 @@
 #!/bin/bash
-# snap-hold-selector.sh — продвинутый менеджер блокировок Snap
+# snap-manager.sh — продвинутый менеджер блокировок Snap
+
+LOG_DIR="/var/log/snap-update-manager"
+ACTIVE_SORT=0  # 0 = быстрый запуск (без меню) - сначала системные пакеты, 1 = спрашивать сортировку
 
 if [[ $EUID -ne 0 ]]; then
     zenity --error --text="Требуются права root. Запустите через sudo." 2>/dev/null
     exit 1
+fi
+
+
+# --- ОЧИСТКА СТАРЫХ ЛОГОВ (старше 30 дней) ---
+if [[ -d "$LOG_DIR" ]]; then
+    # Тихая очистка: удаляем *.log, которые не изменялись более 30 дней
+    find "$LOG_DIR" -maxdepth 1 -name "*.log" -mtime +30 -delete 2>/dev/null || true
 fi
 
 # --- 1. Получение версии Snapd ---
@@ -37,22 +47,56 @@ while read -r pkg status; do
 done <<< "$snap_statuses"
 
 # --- 2. Меню ---
+# Сначала определяем, есть ли глобальная блокировка
+if snap refresh --time 2>/dev/null | grep -qE "^hold: (forever|[0-9])"; then
+    GLOBAL_STATE="🔴 ОБНОВЛЕНИЯ ПРИОСТАНОВЛЕНЫ"
+    GLOBAL_ACTION_ITEM=("FALSE" "🌐 Глобально: возобновить ВСЕ обновления (--unhold)")
+else
+    GLOBAL_STATE="🟢 ОБНОВЛЕНИЯ АКТИВНЫ (обновляются в фоне)"
+    GLOBAL_ACTION_ITEM=("FALSE" "🌐 Глобально: приостановить ВСЕ обновления (--hold)")
+fi
+
 action=$(zenity --list --radiolist \
-    --title="$TITLE" --text="Выберите режим работы:" \
-    --column="Выбор" --column="Действие" --width=450 --height=350 \
+    --title="$TITLE" --text="Глобальный статус: $GLOBAL_STATE\n\nВыберите режим работы:" \
+    --column="Выбор" --column="Действие" --width=650 --height=280 \
     TRUE "Оставить как есть (ручной выбор)" \
     FALSE "Выделить ВСЕ приложения" \
     FALSE "Снять ВСЕ выделения" \
-    FALSE "Разово обновить выбранные (снять блокировку, обновить, вернуть)" \
+    FALSE "Разово обновить заблокированные snap-пакеты" \
+    "${GLOBAL_ACTION_ITEM[@]}" \
     2>/dev/null) || exit 0
 
-sort_action=$(zenity --list --radiolist \
+# --- Обработка глобальных действий ---
+if [[ "$action" == "🌐 Глобально: приостановить ВСЕ обновления (--hold)" ]]; then
+    if snap refresh --hold >/dev/null 2>&1; then
+        zenity --info --title="$TITLE" --text="✅ Глобальная блокировка ВКЛЮЧЕНА.\n\nВсе Snap-пакеты больше не будут обновляться автоматически." 2>/dev/null
+    else
+        zenity --error --title="$TITLE" --text="❌ Ошибка при глобальной блокировке." 2>/dev/null
+    fi
+    exit 0
+elif [[ "$action" == "🌐 Глобально: возобновить ВСЕ обновления (--unhold)" ]]; then
+    if snap refresh --unhold >/dev/null 2>&1; then
+        zenity --info --title="$TITLE" --text="✅ Глобальная блокировка СНЯТА.\n\nАвтоматические обновления всех Snap-пакетов снова активны." 2>/dev/null
+    else
+        zenity --error --title="$TITLE" --text="❌ Ошибка при снятии глобальной блокировки." 2>/dev/null
+    fi
+    exit 0
+fi
+
+
+if [[ "$ACTIVE_SORT" == 1 ]]; then
+# --- Дальнейшая логика (сортировка и список) ---
+    sort_action=$(zenity --list --radiolist \
     --title="$TITLE" --text="Выберите сортировку списка:" \
     --column="Выбор" --column="Сортировка" --width=400 --height=250 \
     TRUE "По имени (А-Я)" \
     FALSE "Сначала заблокированные" \
     FALSE "Сначала системные" \
     2>/dev/null) || exit 0
+
+else
+    sort_action="Сначала системные"
+fi
 
 # --- 3. Подготовка списка ---
 declare -a sorted_pkgs
@@ -103,7 +147,7 @@ updated_count=0
 error_msgs=""
 
 # === БЛОК РАЗОВОГО ОБНОВЛЕНИЯ С ЛОГАМИ И ПРОВЕРКОЙ ПРОЦЕССОВ ===
-if [[ "$action" == "Разово обновить выбранные (снять блокировку, обновить, вернуть)" ]]; then
+if [[ "$action" == "Разово обновить заблокированные snap-пакеты" ]]; then
     to_update=()
     for pkg in "${!current_status[@]}"; do
         if [[ "${current_status[$pkg]}" == "1" ]]; then to_update+=("$pkg"); fi
@@ -116,7 +160,6 @@ if [[ "$action" == "Разово обновить выбранные (снять
     fi
 
     # --- Создаем папку для логов ---
-    LOG_DIR="/var/log/snap-update-manager"
     mkdir -p "$LOG_DIR"
     MASTER_LOG="$LOG_DIR/update-$(date +%Y%m%d_%H%M%S).log"
     
@@ -128,7 +171,7 @@ if [[ "$action" == "Разово обновить выбранные (снять
     mkfifo "$pipe"
     
     # Запускаем прогресс БЕЗ --auto-close, чтобы он не закрылся раньше времени
-    zenity --progress --title="$TITLE" --text="Подготовка..." --percentage=0 < "$pipe" &
+    zenity --progress --title="$TITLE" --text="Подготовка..." --percentage=0  --width=600 --height=100 < "$pipe" &
     zenity_pid=$!
     exec 3> "$pipe"
 
@@ -180,7 +223,7 @@ if [[ "$action" == "Разово обновить выбранные (снять
     # --- ЗАВЕРШАЕМ ПРОГРЕСС ---
     # Отправляем 100%, чтобы прогресс-бар заполнился до конца
     echo "100" >&3
-    echo "# Готово! Закрытие..." >&3
+    echo "# Готово!" >&3
     exec 3>&-
     
     # Ждем закрытия Zenity (так как --auto-close убран, он закроется только после закрытия пайпа)
