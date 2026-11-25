@@ -1,3 +1,3 @@
 #!/bin/bash
 echo -e '\033[1;32m УСТАНОВКА SNAP-MANAGER...\033[0m'
-sudo apt install ../deb/snap-manager_1.0.0_all.deb
+sudo apt install -y ../deb/snap-manager_1.0.0_all.deb

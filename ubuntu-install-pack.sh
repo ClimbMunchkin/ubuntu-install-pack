@@ -36,8 +36,7 @@ progs=$(zenity --width=800 --height=500 --list  --text "НАСТРОЙКА UBUNT
 			   TRUE '3.1-zsh-terminal' 'Установка красивого и удобного терминала ZSH'\
 			   TRUE '3.2-snap-manager' 'Управление блокировками snap-пакетов'\
 			   FALSE '3.3-codec' 'Установка кодеков для воспроизведения мультимедиа'\
-			   FALSE '3.4-flash' 'Установка flash -плейера'\
-			   FALSE '3.5-office' 'Установка офисных программ'\
+			   FALSE '3.4-office' 'Установка офисных программ'\
 			   FALSE '4-zen-kernel' 'Установка игрового Zen-ядра на Ubuntu'\
 			   FALSE '5-nvidia-driver' 'Установка драйвера видеокарты nvidia GeForce GTX 1650'\
 			   )
