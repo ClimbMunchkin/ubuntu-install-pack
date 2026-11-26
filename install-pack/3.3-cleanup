@@ -1,2 +1,3 @@
 #!/bin/bash
 echo -e '\033[1;32m ДОБАВЛЯЕМ СКРИПТ ДЛЯ УДАЛЕНИЯ СТАРЫХ ПАКЕТОВ И ОЧИСТКИ КЭША...\033[0m'
+sudo apt install -y ../deb/cleanup_1.0.0_all.deb
