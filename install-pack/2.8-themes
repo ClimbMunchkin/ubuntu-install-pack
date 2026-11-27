@@ -1,6 +1,6 @@
 #!/bin/bash
 #Установка тем
-echo -e '\033[1;32m УСТАНАВЛИВАЕМ ТЕМЫ ДЛЯ GNOME...\033[0m'
+echo -e '\033[1;32m УСТАНАВЛИВАЕМ ТЕМЫ ДЛЯ GNOME И ОБОИ...\033[0m'
 mkdir ~/.themes
 cp ../themes/themes/* ~/.themes
 cd ~/.themes
@@ -9,3 +9,15 @@ do
 echo "Устанавливаем тему $file";
 tar xf "$file";
 done
+
+BG_DIR=/usr/share/backgrounds
+
+echo "Устанавливаем обои";
+
+sudo mkdir $BG_DIR/Diesel
+sudo cp ../themes/Diesel/* $BG_DIR/Diesel
+sudo mkdir $BG_DIR/MacBuntu-Wallpapers
+sudo cp ../themes/MacBuntu-Wallpapers/* $BG_DIR/MacBuntu-Wallpapers
+sudo mkdir $BG_DIR/RocketFly
+sudo cp ../themes/RocketFly/* $BG_DIR/RocketFly
+
