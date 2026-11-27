@@ -1,3 +1,6 @@
 #!/bin/bash
 echo -e '\033[1;32m УСТАНОВКА АНТИВИРУСА rkHunter...\033[0m'
 sudo apt install -y ../deb/rkhunter-gui_1.0.0_all.deb
+
+sudo sed -i 's/^WEB_CMD=.*/WEB_CMD=/' /etc/rkhunter.conf
+sudo sed -i 's/^MIRRORS_MODE=.*/MIRRORS_MODE=0/' /etc/rkhunter.conf
