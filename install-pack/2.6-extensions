@@ -13,10 +13,10 @@ cp -r ../extensions ~/.local/share/gnome-shell
 # или активировать вручную 
 
 if [ "$XDG_SESSION_TYPE" = "x11" ]; then
-    echo "Перезапуск GNOME Shell..."
+    echo "🚀 Перезапуск GNOME Shell..."
     killall -HUP gnome-shell
 else
-    echo "Автоматическая активация расширения невозможна."
+    echo "⚠️ Автоматическая активация расширения невозможна."
     echo "Выйдите из системы и войдите снова, чтобы активировать расширения GNOME."
 	read -r -p "Нажмите Enter для продолжения..."
 fi

@@ -2,7 +2,12 @@
 #Обязательные программы
 echo -e '\033[1;32m УСТАНАВЛИВАЕМ ШРИФТЫ...\033[0m'
 sudo apt update
+
+# Записываем в базу данных debconf информацию о том, что вы принимаете лицензию EULA для 
+# ttf-mscorefonts-installer, и при установке больше не будет запрашивать.
+echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | sudo debconf-set-selections
 sudo apt install -y ttf-mscorefonts-installer cabextract
+
 mkdir ~/.fonts
 wget -qO- http://plasmasturm.org/code/vistafonts-installer/vistafonts-installer | bash
 cp ../fonts/* ~/.fonts
